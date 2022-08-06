@@ -26,8 +26,8 @@ const smtpConfig = smtpTransport({
     },
     port: 587,
     auth: {
-        user: '_mainaccount@vendorcrest.com',
-        pass: '@0N0q1vyDwAW2+'
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_USER
     }
 })
 

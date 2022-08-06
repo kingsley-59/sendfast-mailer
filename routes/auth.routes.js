@@ -2,9 +2,11 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const { PrismaClient } = require('@prisma/client')
+const dotenv = require('dotenv')
 
 const router = express.Router()
 const prisma = new PrismaClient()
+dotenv.config()
 
 router.get('/signup', (req, res) => {
     console.log('signup route called...')
@@ -82,7 +84,7 @@ router.post('/login', async (req, res) => {
 
     let token;
     try {
-        token = jwt.sign({id: user.id}, 'very-secret-key', {expiresIn: "1h"})
+        token = jwt.sign({id: user.id}, process.env.TOKEN_SECRET, {expiresIn: "1h"})
         res.status(200).send({status: 'success', data: {user, token}})
     } catch (error) {
         console.log(error)
