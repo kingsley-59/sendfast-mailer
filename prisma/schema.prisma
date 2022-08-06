@@ -15,7 +15,7 @@ model Users {
   name            String
   email           String    @unique
   passwordHash    String
-  lastLogin       DateTime
+  lastLogin       DateTime?
   created_at      DateTime  @default(now())
   contacts        Contact[]
 }
