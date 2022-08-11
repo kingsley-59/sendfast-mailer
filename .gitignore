@@ -1,9 +1,9 @@
 node_modules
 # Keep environment variables out of version control
 .env
-client/node_modules
-client/yarn-error.log
-client/build
-client/env
+frontend/node_modules
+frontend/yarn-error.log
+frontend/build
+frontend/.env
 
 notes.txt
