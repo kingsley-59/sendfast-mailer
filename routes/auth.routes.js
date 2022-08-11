@@ -82,10 +82,22 @@ router.post('/login', async (req, res) => {
         res.status(500).send({status: 'error', message: 'internal server error'})
     }
 
-    let token;
+    let accessToken;
+    let refreshToken;
     try {
-        token = jwt.sign({id: user.id}, process.env.TOKEN_SECRET, {expiresIn: "1h"})
-        res.status(200).send({status: 'success', data: {user, token}})
+        accessToken = jwt.sign({id: user.id}, process.env.TOKEN_SECRET, {expiresIn: "30s"})
+        refreshToken = jwt.sign({id: user.id}, process.env.TOKEN_SECRET, {expiresIn: "1w"})
+
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7     // 1 days in milliseconds
+        })
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24      // 7 days in milliseconds
+        })
+
+        res.status(200).send({status: 'success', data: {user, accessToken}})
     } catch (error) {
         console.log(error)
         res.status(500).send({status: 'error', message: 'internal server error'})
