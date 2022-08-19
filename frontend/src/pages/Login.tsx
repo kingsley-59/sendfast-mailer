@@ -1,8 +1,9 @@
 import axios from "axios";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from 'styled-components'
 import { API_URL } from "../config/config";
+import { AuthContext, useAuthContext } from "../contexts/AuthContext";
 import { Input } from "../custom/components";
 import DefaultLayout from "../Layouts/DefaultLayout";
 
@@ -14,6 +15,7 @@ export default function Login() {
     const [errMsg, setErrMsg] = useState('')
 
     const navigate = useNavigate()
+    const { setUser } = useContext(AuthContext)
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault()
@@ -27,6 +29,7 @@ export default function Login() {
             console.log('Payload: ', payload)
             let res = await axios.post(`${API_URL}/auth/login`, payload)
             if (res.data.status === 'success') {
+                setUser(res.data?.user)
                 setLoading(false)
                 navigate('/')
             } else {

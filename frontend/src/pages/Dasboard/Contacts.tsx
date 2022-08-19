@@ -1,12 +1,45 @@
+import { FormEvent, useState } from "react"
+import contactsData from "../../data/contacts"
 
 
 export default function Contacts() {
+    const [showForm, setShowForm] = useState(false)
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
 
+    function handleNewContacts(e: FormEvent) {
+        e.preventDefault()
+
+        console.log('name', name)
+        console.log('email', email)
+    }
 
     return (
         <div className="position-relative py-4 px-3">
             <div className="contacts-heading">
                 <span className="h2">Contacts</span>
+            </div>
+            <div className="position-fixed" style={{bottom: '50px', right: '30px'}}>
+                <div className={`p-3 rounded-3 shadow bg-light mb-3 ${showForm ? 'd-block' : 'd-none'}`} style={{minWidth: '300px', minHeight: '300px'}}>
+                    <div className="text-end">
+                        <i className="bi bi-x-circle" onClick={() => setShowForm(false)}></i>
+                    </div>
+                    <div className="fs-5 fw-bold text-center mb-3">New Contact</div>
+                    <form onSubmit={handleNewContacts} >
+                        <div className="mb-3">
+                            <input type="text" className="form-control" value={name} onChange={e => setName(e.target.value)} placeholder={'name'} required/>
+                        </div>
+                        <div className="mb-3">
+                            <input type="email" className="form-control" value={email} onChange={e => setEmail(e.target.value)} placeholder={'email'} required/>
+                        </div>
+                        <div className="mb-3 text-center">
+                            <button type="submit" className="btn-secondary p-2 border-0 rounded-2 ">Add contact</button>
+                        </div>
+                    </form>
+                </div>
+                <div role={'button'} onClick={() => setShowForm(true)} className="rounded-circle shadow bg-secondary d-flex align-items-center justify-content-center ms-auto" style={{width: '60px', height: '60px'}}>
+                    <i className="bi bi-person-plus-fill fs-4 text-light"></i>
+                </div>
             </div>
             <hr className="hr" />
             <div className="d-flex align-items-center justify-content-between">
@@ -36,27 +69,17 @@ export default function Contacts() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>James</td>
-                        <td>jameshungerson@gmail.com</td>
-                        <td>12-08-2020 19:23:05</td>
-                        <td role={'button'}><i className="bi bi-trash3-fill text-danger"></i></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>James</td>
-                        <td>jameshungerson@gmail.com</td>
-                        <td>12-08-2020 19:23:05</td>
-                        <td role={'button'}><i className="bi bi-trash3-fill text-danger"></i></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>James</td>
-                        <td>jameshungerson@gmail.com</td>
-                        <td>12-08-2020 19:23:05</td>
-                        <td role={'button'}><i className="bi bi-trash3-fill text-danger"></i></td>
-                    </tr>
+                    {
+                        contactsData.map((contact, idx) => (
+                            <tr>
+                                <td>{idx + 1}</td>
+                                <td>{contact?.name}</td>
+                                <td>{contact?.email}</td>
+                                <td>{contact?.date_added}</td>
+                                <td role={'button'}><i className="bi bi-trash3-fill text-danger"></i></td>
+                            </tr>
+                        ))
+                    }
                 </tbody>
             </table>
         </div>

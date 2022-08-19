@@ -4,6 +4,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const http = require('http')
 const authRoutes = require('./routes/auth.routes')
+const contactsRoutes = require('./routes/contacts.routes')
 const path = require('path')
 const nodemailer = require('nodemailer')
 const smtpTransport = require('nodemailer-smtp-transport')
@@ -62,6 +63,7 @@ app.use((req, res, next) => {
 })
 
 app.use('/auth', authRoutes)
+app.use('/contacts', contactsRoutes)
 
 app.get('/sendmail', async function(req, res) {
     console.log('sendmail request processing...')

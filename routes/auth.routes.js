@@ -1,11 +1,10 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const { PrismaClient } = require('@prisma/client')
+const prisma = require('../config/prisma')
 const dotenv = require('dotenv')
 
 const router = express.Router()
-const prisma = new PrismaClient()
 dotenv.config()
 
 router.get('/signup', (req, res) => {
@@ -80,27 +79,20 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).send({status: 'error', message: 'internal server error'})
+        return;
     }
 
     let accessToken;
     let refreshToken;
     try {
-        accessToken = jwt.sign({id: user.id}, process.env.TOKEN_SECRET, {expiresIn: "30s"})
+        accessToken = jwt.sign({id: user.id}, process.env.TOKEN_SECRET, {expiresIn: "1d"})
         refreshToken = jwt.sign({id: user.id}, process.env.TOKEN_SECRET, {expiresIn: "1w"})
-
-        res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7     // 1 days in milliseconds
-        })
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24      // 7 days in milliseconds
-        })
 
         res.status(200).send({status: 'success', data: {user, accessToken}})
     } catch (error) {
         console.log(error)
         res.status(500).send({status: 'error', message: 'internal server error'})
+        return ;
     }
 })
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './App.css';
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
 import Loader from './components/Loader';
 import DashboardLayout from './Layouts/DashboardLayout';
 
@@ -25,14 +26,16 @@ function ProtectedRoutes() {
 
 function App() {
   return (
-    <React.Suspense fallback={<Loader />}>
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
-        <Route path='/dashboard/*' element={<ProtectedRoutes />} />
-      </Routes>
-    </React.Suspense>
+    <AuthProvider>
+      <React.Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<Signup />} />
+          <Route path='/dashboard/*' element={<ProtectedRoutes />} />
+        </Routes>
+      </React.Suspense>
+    </AuthProvider>
   );
 }
 
