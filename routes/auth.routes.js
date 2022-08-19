@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const prisma = require('../config/prisma')
 const dotenv = require('dotenv')
+const Error500 = require('../utils/Error500')
 
 const router = express.Router()
 dotenv.config()
@@ -48,7 +49,7 @@ router.post('/signup', async (req, res) => {
         })
     } catch (error) {
         console.log(error)
-        res.status(500).send({status: 'error', message: 'internal server error'})
+        res.status(500).send(Error500())
     }
     
 })
@@ -91,7 +92,7 @@ router.post('/login', async (req, res) => {
         res.status(200).send({status: 'success', data: {user, accessToken}})
     } catch (error) {
         console.log(error)
-        res.status(500).send({status: 'error', message: 'internal server error'})
+        res.status(500).send(Error500())
         return ;
     }
 })

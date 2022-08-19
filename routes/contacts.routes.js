@@ -23,7 +23,7 @@ router.get('/all', JwtAuth, async (req, res) => {
         res.status(200).send({status: 'success', data: contacts})
     } catch (error) {
         console.log(error.message)
-        res.status(500).send({status: 'error', message: 'Internal server error'})
+        res.status(500).send(Error500())
     }
 })
 
