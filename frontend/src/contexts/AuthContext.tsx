@@ -31,13 +31,22 @@ export function AuthProvider({children}: any) {
         }
     }
 
-    const user = localStorage.getItem('sendfast-user')
-    const token = user && JSON.parse(user)?.accessToken
+    function saveContacts(contacts: any | Array<any>) {
+        if (!contacts || contacts.length < 1) {
+            throw new Error('Invalid contacts data')
+        }
+
+        try {
+            localStorage.setItem('contacts', JSON.stringify(contacts))
+            return true
+        } catch (error: any) {
+            return new Error(error?.message)
+        }
+    }
 
     const value: any = {
-        user,
-        token,
-        setUser
+        setUser,
+        saveContacts
     }
 
     return (

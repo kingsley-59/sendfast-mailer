@@ -3,8 +3,14 @@
 export default function Messages() {
 
     return (
-        <div className="container my-auto mx-auto text-center">
-            <span className="h3">Dashbaord Message page</span>
+        <div className="position-relative py-4 px-3">
+             <div className="contacts-heading">
+                <span className="h2">Messages</span>
+            </div>
+
+            <hr className="hr" />
+
+
         </div>
     )
 }

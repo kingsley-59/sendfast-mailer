@@ -11,28 +11,48 @@ datasource db {
 }
 
 model Users {
-  id              String    @id @default(uuid())
-  name            String
-  email           String    @unique
-  passwordHash    String
-  lastLogin       DateTime?
-  created_at      DateTime  @default(now())
-  contacts        Contact[]
+  id           String       @id @default(uuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  lastLogin    DateTime?
+  created_at   DateTime
+  updated_at   DateTime     @default(now())
+  contacts     Contact[]
+  mailServer   MailServer[]
+  messages     Messages[]
+}
+
+model MailServer {
+  id         String   @id @default(uuid())
+  host       String
+  port       Int      @default(587)
+  user       String
+  passHash   String
+  Users      Users?   @relation(fields: [usersId], references: [id])
+  usersId    String?
+  created_at DateTime
+  updated_at DateTime @default(now())
 }
 
 model Contact {
-  id              String   @id @default(uuid())
-  name            String?
-  email           String
-  created_at      DateTime @default(now())
-  Users           Users?   @relation(fields: [usersId], references: [id])
-  usersId         String?
-  messages        Messages[]
+  id         String     @id @default(uuid())
+  name       String?
+  email      String
+  created_at DateTime
+  updated_at DateTime   @default(now())
+  Users      Users?     @relation(fields: [usersId], references: [id])
+  usersId    String?
+  messages   Messages[]
 }
 
 model Messages {
-  id              String   @id @default(uuid())
-  subject         String
-  from            String
-  to              Contact[]
+  id         String    @id @default(uuid())
+  subject    String
+  from       String
+  to         Contact[]
+  created_at DateTime
+  updated_at DateTime  @default(now())
+  Users      Users?    @relation(fields: [usersId], references: [id])
+  usersId    String?
 }

@@ -2,12 +2,14 @@ const express = require('express')
 const dotenv = require('dotenv')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const http = require('http')
+
+const serverErrorHandler = require('./middleware/ServerErrorHandler')
+
 const authRoutes = require('./routes/auth.routes')
 const contactsRoutes = require('./routes/contacts.routes')
-const path = require('path')
-const nodemailer = require('nodemailer')
-const smtpTransport = require('nodemailer-smtp-transport')
+const mailserverRoutes = require('./routes/mailserver.routes')
+const messageRoutes = require('./routes/messages.routes')
+const testmailRoute = require('./routes/testmail.routes')
 
 dotenv.config()
 const PORT = process.env.PORT || 4001
@@ -19,64 +21,17 @@ app.use(cors({
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
-const smtpConfig = smtpTransport({
-    host: 'mail.vendorcrest.com',
-    secure: false,
-    tls: {
-        rejectUnauthorized: false
-    },
-    port: 587,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_USER
-    }
-})
 
-const transporter = nodemailer.createTransport(smtpConfig)
+// router-level middlewares
+app.use('/api/auth', authRoutes)
+app.use('/api/contacts', contactsRoutes)
+app.use('/api/serverinfo', mailserverRoutes)
+app.use('/api/messages', messageRoutes)
 
-let mailOptions = {
-    from: 'Vendorcrest Digital <info@vendorcrest.com>',
-    sender: 'divine10646@gmail.com',
-    to: 'kingsleyakahibe@gmail.com',
-    replyTo: 'divine10646@gmail.com',
-    subject: 'Here is the subject',
-    html: '<h2>This is a another test email message.<h2/>',
-}
+app.use('/sendtestmail', testmailRoute)
 
-app.use(express.static(path.join(__dirname, 'client', 'build')))
-
-app.use((req, res, next) => {
-    console.log(req?.body ?? {})
-
-    if (req.method === 'POST') {
-        // check if request body is empty
-        if (!req.body) {
-            res.status(422).json({
-                status: 'error', 
-                message: 'unprocessable entity'
-            })
-            return ;
-        }
-    }
-
-    next()
-})
-
-app.use('/auth', authRoutes)
-app.use('/contacts', contactsRoutes)
-
-app.get('/sendmail', async function(req, res) {
-    console.log('sendmail request processing...')
-    try {
-        const info = await transporter.sendMail(mailOptions)
-        console.log('Info: ', info)
-        res.send('Email sent!')
-    } catch (error) {
-        console.log('Error', error)
-        res.send('An error occurred!')
-    }
-})
-
+// error-handling middlewares
+app.use(serverErrorHandler)
 
 app.listen(PORT, () => {
     console.log('listening at port ', PORT)

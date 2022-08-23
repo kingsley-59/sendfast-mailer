@@ -5,7 +5,7 @@ require('dotenv').config()
 
 async function JwtAuth(req, res, next) {
     const { authorization } = req.headers
-    const token = authorization.split(' ')
+    const token = authorization?.split(' ') ?? []
     if (token[0] !== 'Bearer') {
         res.status(400).send({status: 'error', message: 'Invalid authorization header'})
         return;
@@ -30,7 +30,8 @@ async function JwtAuth(req, res, next) {
         console.log(user)
         next()
     } catch (error) {
-        res.status(500).send({status: 'error', message: 'Internal server error'})
+        console.log(error.message)
+        res.status(500).send({status: 'error', message: error.message})
         return;
     }
 }

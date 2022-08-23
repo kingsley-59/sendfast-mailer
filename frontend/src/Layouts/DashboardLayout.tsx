@@ -1,7 +1,11 @@
-import { NavLink, Route, Routes } from "react-router-dom"
+import { Link, NavLink, Route, Routes, useNavigate } from "react-router-dom"
 import Contacts from "../pages/Dasboard/Contacts"
 import Dashboard from "../pages/Dasboard/Dashboard"
 import Messages from "../pages/Dasboard/Messages"
+import Settings from "../pages/Dasboard/Settings"
+
+import CreateMessage from "../pages/Dasboard/CreateMessage"
+import { useEffect } from "react"
 
 
 function SideBar() {
@@ -11,9 +15,11 @@ function SideBar() {
                 <span className="site-name">SendFast Mailer</span>
             </div>
             <hr className="p-0 m-2" />
-            <div className="bg-light fw-bolder text-secondary text-center rounded-3 p-2 my-3">
-                New Message <i className="bi bi-plus fw-bolder"></i>
-            </div>
+            <Link to={'/dashboard/create'}>
+                <div role={'button'} className="bg-light fw-bolder text-secondary text-center rounded-3 p-2 my-3">
+                    New Message <i className="bi bi-plus fw-bolder"></i>
+                </div>
+            </Link>
             <div className="d-flex flex-column gap-3 p-2 ">
                 <NavLink to="/dashboard">
                     <div role={'button'} className="row">
@@ -34,10 +40,10 @@ function SideBar() {
                     </div>
                 </NavLink>
                 <NavLink to="/dashboard/settings">
-                <div role={'button'} className="row">
-                    <i className="bi bi-gear-fill col-auto"></i>
-                    <span className="col-auto">Settings</span>
-                </div>
+                    <div role={'button'} className="row">
+                        <i className="bi bi-gear-fill col-auto"></i>
+                        <span className="col-auto">Settings</span>
+                    </div>
                 </NavLink>
             </div>
             {/* <div className="bg-light text-secondary p-2 my-auto rounded-3 shadow">
@@ -47,8 +53,17 @@ function SideBar() {
     )
 }
 
-export default function DashboardLayout({children} : any) {
+export default function DashboardLayout({ children }: any) {
+    const navigate = useNavigate()
 
+    useEffect(() => {
+        let token = localStorage.getItem('token')
+        console.log(token)
+        if (!token) {
+            navigate('/login')
+            return;
+        }
+    }, [navigate])
 
     return (
         <div className="container-fluid">
@@ -62,6 +77,8 @@ export default function DashboardLayout({children} : any) {
                         <Route path="" element={<Dashboard />} />
                         <Route path="contacts" element={<Contacts />} />
                         <Route path="messages" element={<Messages />} />
+                        <Route path="settings" element={<Settings />} />
+                        <Route path="create" element={<CreateMessage />} />
                     </Routes>
                 </div>
             </div>
