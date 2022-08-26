@@ -50,8 +50,27 @@ async function updateMailServerInfo() {
 
 }
 
-async function deleteMailServerInfo() {
+async function deleteMailServerInfo(req, res, next) {
+    const { id } = req.body ?? {}
 
+    if (!id) {
+        res.status(400).send({status: 'error', message: 'id is required'})
+        return;
+    }
+
+    try {
+        let mailserver = await prisma.contact.delete({
+            where: { id }
+        })
+        if (!mailserver) {
+            res.status(500).send({status: 'error', message: 'Error occurred while deleting contact.'})
+            return;
+        }
+        console.log(mailserver)
+        res.status(204).send({status: 'success', message: 'Server info deleted successfully'})
+    } catch (error) {
+        next(error)
+    }
 }
 
 

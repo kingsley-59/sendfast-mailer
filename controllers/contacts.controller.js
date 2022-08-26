@@ -1,5 +1,4 @@
 const prisma = require('../config/prisma')
-require('dotenv').config()
 
 
 async function getUserContacts(req, res, next) {
@@ -42,13 +41,27 @@ async function updateUserContact() {
 
 }
 
-async function deleteUserContact() {
-    // const { email, password } = req.body ?? {}
+async function deleteUserContact(req, res, next) {
+    const { id } = req.body ?? {}
 
-    // validate request token
-    
+    if (!id) {
+        res.status(400).send({status: 'error', message: 'id is required'})
+        return;
+    }
 
-    // delete contact details from table
+    try {
+        let contact = await prisma.contact.delete({
+            where: { id }
+        })
+        if (!contact) {
+            res.status(500).send({status: 'error', message: 'Error occurred while deleting contact.'})
+            return;
+        }
+        console.log(contact)
+        res.status(204).send({status: 'success', message: 'Contact deleted successfully'})
+    } catch (error) {
+        next(error)
+    }
 }
 
 module.exports = {

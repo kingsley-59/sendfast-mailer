@@ -74,6 +74,7 @@ async function loginHandler(req, res, next) {
 
     let accessToken;
     try {
+        // eslint-disable-next-line no-undef
         accessToken = jwt.sign({id: user.id}, process.env.TOKEN_SECRET, {expiresIn: "1w"})
 
         res.status(200).send({status: 'success', data: {user, accessToken}})

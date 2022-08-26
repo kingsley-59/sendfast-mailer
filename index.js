@@ -12,6 +12,7 @@ const messageRoutes = require('./routes/messages.routes')
 const testmailRoute = require('./routes/testmail.routes')
 
 dotenv.config()
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 4001
 const app = express()
 
